@@ -1,7 +1,38 @@
 package com.example.demo;
 
+import com.sun.net.httpserver.HttpServer;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+
 public class DemoApplication {
-    public static void main(String[] args) {
-        System.out.println("Hello from Jenkins + Maven + Docker!");
+
+    public static void main(String[] args) throws Exception {
+
+        int port = 8081;
+
+        HttpServer server = HttpServer.create(
+                new InetSocketAddress(port), 0
+        );
+
+        server.createContext("/", exchange -> {
+
+            String response =
+                    "Hello from azmi + amir + rizwan + AKS!";
+
+            exchange.sendResponseHeaders(
+                    200,
+                    response.getBytes().length
+            );
+
+            try (OutputStream os = exchange.getResponseBody()) {
+                os.write(response.getBytes());
+            }
+        });
+
+        server.start();
+
+        System.out.println(
+                "Server started on port " + port
+        );
     }
 }
